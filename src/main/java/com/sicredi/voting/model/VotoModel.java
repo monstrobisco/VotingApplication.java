@@ -15,4 +15,11 @@ public class VotoModel {
     private String cpfAssociado;
     private boolean voto;
 
+    @Override
+    public String toString() {
+        return "PautaModel{" +
+                "Voto='" + voto + '\'' +
+                '}';
+    }
+
 }
