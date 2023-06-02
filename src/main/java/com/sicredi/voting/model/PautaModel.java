@@ -20,4 +20,12 @@ public class PautaModel {
     private LocalDateTime fim;
     private List<VotoModel> votos;
 
+    @Override
+    public String toString() {
+        return "PautaModel{" +
+                "id='" + id + '\'' +
+                ", titulo='" + titulo + '\'' +
+                '}';
+    }
+
 }

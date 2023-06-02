@@ -1,15 +1,15 @@
 #!/bin/bash
 
-echo "Executando: mvn clean -DskipTests"
-mvn clean -DskipTests
+echo "Executando: mvn clean "
+mvn clean
 
 
-echo "Executando: mvn compile -DskipTests"
-mvn compile -DskipTests
+echo "Executando: mvn compile "
+mvn compile
 
 
-echo "Executando: mvn install -DskipTests"
-mvn install -DskipTests
+echo "Executando: mvn install "
+mvn install
 
 
 echo "Executando: docker build -t thmedeiroslima/voting ."
