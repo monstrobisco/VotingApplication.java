@@ -18,15 +18,15 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - ./data/rabbitmq/rabbitmq_data:/var/lib/rabbitmq
-#  cpfvalidador:
-#    image: thmedeiroslima/cpfvalidation:latest
-#    ports:
-#      - "9191:9191"
-#  voting:
-#    image: thmedeiroslima/voting:latest
-#    ports:
-#      - "9090:9090"
-#    depends_on:
-#      - mongodbDocker
-#      - cpfvalidador
-#      - rabbitmq
+  cpfvalidador:
+    image: thmedeiroslima/cpfvalidation:latest
+    ports:
+      - "9191:9191"
+  voting:
+    image: thmedeiroslima/voting:latest
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mongodbDocker
+      - cpfvalidador
+      - rabbitmq
