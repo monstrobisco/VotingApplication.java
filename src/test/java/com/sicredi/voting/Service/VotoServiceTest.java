@@ -9,8 +9,10 @@ import com.sicredi.voting.repository.SessaoVotacaoRepository;
 import com.sicredi.voting.repository.VotoRepository;
 import com.sicredi.voting.service.CpfService;
 import com.sicredi.voting.service.VotoService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import reactor.core.publisher.Flux;
@@ -18,12 +20,13 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
+import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @SpringBootTest
 public class VotoServiceTest {
-
+    private VotoService votoService;
     @MockBean
     private VotoRepository votoRepository;
     @MockBean
@@ -37,7 +40,11 @@ public class VotoServiceTest {
     Verifica se um erro é lançado quando o tempo da sessão de votação expirou.
     Verifica se um erro é lançado quando um associado já votou.
     Verifica se o voto é salvo corretamente quando todas as condições são atendidas.*/
-
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        votoService = new VotoService(votoRepository, null, null, null);
+    }
     @Test
     public void testVotar() {
         VotoService votoService = new VotoService(votoRepository, pautaRepository, sessaoVotacaoRepository, cpfService);
@@ -101,26 +108,26 @@ public class VotoServiceTest {
     /*
         Verifica se o método contarVotos retorna corretamente a contagem dos votos "sim" e "não"
     */
+
     @Test
-    public void testContarVotos() {
-        VotoService votoService = new VotoService(votoRepository, pautaRepository, sessaoVotacaoRepository, cpfService);
+    public void contarVotosTest() {
+        VotoModel voto1 = new VotoModel();
+        voto1.setVoto(true);
+        VotoModel voto2 = new VotoModel();
+        voto2.setVoto(true);
+        VotoModel voto3 = new VotoModel();
+        voto3.setVoto(false);
 
-        String idPauta = "pauta1";
+        when(votoRepository.findByIdPauta("idPauta"))
+                .thenReturn(Flux.just(voto1, voto2, voto3));
 
-        VotoModel votoSim1 = new VotoModel(); // Criar votoSim1 com dados adequados e voto = true
-        VotoModel votoSim2 = new VotoModel(); // Criar votoSim2 com dados adequados e voto = true
-        VotoModel votoNao1 = new VotoModel(); // Criar votoNao1 com dados adequados e voto = false
-
-        Mockito.when(votoRepository.findByIdPauta(idPauta)).thenReturn(Flux.just(votoSim1, votoSim2, votoNao1));
-
-        StepVerifier.create(votoService.contarVotos(idPauta))
-                .assertNext(count -> {
-                    assertEquals(2, count.get("sim"));
-                    assertEquals(1, count.get("nao"));
+        StepVerifier.create(votoService.contarVotos("idPauta"))
+                .assertNext(contagemVotos -> {
+                    assert contagemVotos.get("sim") == 2;
+                    assert contagemVotos.get("nao") == 1;
                 })
                 .verifyComplete();
     }
-
 
 }
 
