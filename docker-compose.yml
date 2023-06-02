@@ -8,16 +8,16 @@ services:
       - 27017:27017
     volumes:
       - ./data/mongodb_data:/data/db
-#  rabbitmq:
-#    image: rabbitmq:3.8.17-management-alpine
-#    ports:
-#      - 5672:5672  # Porta para o protocolo AMQP
-#      - 15672:15672  # Porta para o painel de controle do RabbitMQ
-#    environment:
-#      RABBITMQ_DEFAULT_USER: guest
-#      RABBITMQ_DEFAULT_PASS: guest
-#    volumes:
-#      - ./data/rabbitmq/rabbitmq_data:/var/lib/rabbitmq
+  rabbitmq:
+    image: rabbitmq:3.8.17-management-alpine
+    ports:
+      - 5672:5672  # Porta para o protocolo AMQP
+      - 15672:15672  # Porta para o painel de controle do RabbitMQ
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - ./data/rabbitmq/rabbitmq_data:/var/lib/rabbitmq
 #  cpfvalidador:
 #    image: thmedeiroslima/cpfvalidation:latest
 #    ports:

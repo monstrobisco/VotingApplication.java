@@ -16,6 +16,7 @@ public class CpfService {
 
     public CpfService(WebClient.Builder webClientBuilder, @Value("${cpf.api.base-url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        LOGGER.info("CpfService Inicializado com sucesso!");
         LOGGER.info("Inicializado com a URL base: {}", baseUrl);
     }
 

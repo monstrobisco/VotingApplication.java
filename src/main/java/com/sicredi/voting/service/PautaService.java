@@ -14,7 +14,7 @@ public class PautaService {
 
     public PautaService(PautaRepository pautaRepository) {
         this.pautaRepository = pautaRepository;
-        LOGGER.info("PautaService inicializado com sucesso.");
+        LOGGER.info("PautaService inicializado com sucesso!");
     }
 
     public Mono<PautaModel> criarPauta(PautaModel pauta) {
