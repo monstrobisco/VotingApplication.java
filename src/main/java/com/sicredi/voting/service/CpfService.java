@@ -16,6 +16,7 @@ public class CpfService {
 
     public CpfService(WebClient.Builder webClientBuilder, @Value("${cpf.api.base-url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        LOGGER.info("Inicializado com a URL base: {}", baseUrl);
     }
 
     public Mono<String> verificarStatusCpf(String cpf) {
@@ -30,13 +31,16 @@ public class CpfService {
                             return Mono.error(new Exception("Erro ao verificar o status do CPF"));
                         })
                 .bodyToMono(CpfResponse.class)
-                .doOnSuccess(response -> LOGGER.info("Resposta recebida: {}", response.getStatus()))
+                .doOnSuccess(response -> LOGGER.info("Resposta recebida para CPF: {}. Status: {}", cpfFormatado, response.getStatus()))
+                .doOnError(e -> LOGGER.error("Exceção ao processar o CPF: {}", cpfFormatado, e))
                 .map(CpfResponse::getStatus);
     }
 
 
     public String formatarCpf(String cpf) {
-        return cpf.replaceAll("\\D", "");
+        String cpfFormatado = cpf.replaceAll("\\D", "");
+        LOGGER.debug("CPF formatado: {} -> {}", cpf, cpfFormatado);
+        return cpfFormatado;
     }
 
 
