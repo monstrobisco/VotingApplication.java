@@ -1,20 +1,21 @@
 
+## Execução
 
-## Instalação
-
-A instalação é feita usando docker compose up
+A execução é feita pelo script
 
 ```bash
-./script.sh
+./StartScript.sh
 ```
 
 Após o processamento do script, para acessar o swagger da API, basta acessar o endereço:
-<a href=“http://localhost:9090/swagger-doc/v3/api-docs“>Swagger</a>
+<a href=“http://localhost:9090/swagger-doc/swagger-ui.html“>Swagger</a>
 ```
-http://localhost:9090/swagger-doc/v3/api-docs
+http://localhost:9090/swagger-doc/swagger-ui.html
 ```
 
-Ou usar a especificação abaixo em um cliente Rest como por exemplo o Postman.
+#### Ou usar a especificação abaixo em um cliente Rest como por exemplo o Postman.
+
+#### No diretório ./dvs/collectionPostman, está o arquivo de importação da collection do Postman
 
 # Especificação API de Votação Sicredi
 #### Este documento fornece a especificação para a API de votação do Sicredi. A API permite criar pautas, votar em pautas e recuperar os votos de uma pauta específica.
@@ -237,5 +238,5 @@ Dependências:
 
 # Modelagem de dados:
 
-![Screenshot](modeloDados.png)
+![Screenshot](dvs/modeloDados.png)
 
