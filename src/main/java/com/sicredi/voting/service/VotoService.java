@@ -30,19 +30,22 @@ public class VotoService {
         this.pautaRepository = pautaRepository;
         this.sessaoVotacaoRepository = sessaoVotacaoRepository;
         this.cpfService = cpfService;
+        log.info("VotoService inicializado com sucesso!");
     }
 
     public Mono<VotoModel> votar(VotoModel voto) {
+        log.info("Votação iniciada para CPF: {} e Pauta: {}", voto.getCpfAssociado(), voto.getIdPauta());
         return cpfService.verificarStatusCpf(voto.getCpfAssociado())
-                .doOnNext(cpfStatus -> log.info("CPF Status: " + cpfStatus)) // log para verificar o status do CPF
+                .doOnNext(cpfStatus -> log.info("Status do CPF: {}", cpfStatus))
                 .flatMap(cpfStatus -> {
                     if ("UNABLE_TO_VOTE".equals(cpfStatus)) {
+                        log.warn("CPF inválido ou não autorizado para votar: {}", voto.getCpfAssociado());
                         return Mono.error(new VotacaoException("CPF inválido ou não autorizado para votar"));
                     }
                     return pautaRepository.findById(voto.getIdPauta())
-                            .doOnNext(pauta -> log.info("Pauta: {}" + pauta)) // log para verificar a Pauta
+                            .doOnNext(pauta -> log.info("Pauta encontrada: {}", pauta))
                             .flatMap(pauta -> sessaoVotacaoRepository.findByIdPauta(voto.getIdPauta())
-                                    .doOnNext(sessaoVotacao -> log.info("Sessão de Votação: {}" + sessaoVotacao)) // log para verificar a Sessão de Votação
+                                    .doOnNext(sessaoVotacao -> log.info("Sessão de Votação encontrada: {}", sessaoVotacao))
                                     .flatMap(sessaoVotacao -> {
                                         LocalDateTime now = LocalDateTime.now();
                                         if (now.isAfter(sessaoVotacao.getInicio()) && now.isBefore(sessaoVotacao.getFim())) {
@@ -50,30 +53,36 @@ public class VotoService {
                                                     .hasElement()
                                                     .flatMap(hasVoted -> {
                                                         if (hasVoted) {
+                                                            log.warn("Associado já votou nesta pauta. CPF: {} Pauta: {}", voto.getCpfAssociado(), voto.getIdPauta());
                                                             return Mono.error(new Exception("Associado já votou nesta pauta"));
                                                         } else {
                                                             return votoRepository.save(voto)
-                                                                    .doOnNext(savedVoto -> log.info("Voto salvo: {}" + savedVoto)); // log para verificar o Voto salvo
+                                                                    .doOnNext(savedVoto -> log.info("Voto salvo com sucesso: {}", savedVoto));
                                                         }
                                                     });
                                         } else {
+                                            log.warn("Sessão de votação expirou para a Pauta: {}", voto.getIdPauta());
                                             return Mono.error(new Exception("Sessão de votação Expirou, o tempo para conclusão do voto é de um min"));
                                         }
                                     }));
                 });
     }
 
-
-
     public Flux<VotoModel> getVotosPauta(String idPauta) {
-        return votoRepository.findByIdPauta(idPauta);
+        log.info("Buscando votos para a Pauta: {}", idPauta);
+        return votoRepository.findByIdPauta(idPauta)
+                .doOnNext(voto -> log.info("Voto encontrado: {}", voto));
     }
 
     public Mono<Map<String, Long>> contarVotos(String idPauta) {
+        log.info("Contando votos para a Pauta: {}", idPauta);
         return votoRepository.findByIdPauta(idPauta)
                 .collectList()
-                .map(votos -> votos.stream()
-                        .collect(Collectors.groupingBy(voto -> voto.isVoto() ? "sim" : "nao", Collectors.counting())));
+                .map(votos -> {
+                    Map<String, Long> contagemVotos = votos.stream()
+                            .collect(Collectors.groupingBy(voto -> voto.isVoto() ? "sim" : "nao", Collectors.counting()));
+                    log.info("Contagem de votos para a Pauta: {}. Resultado: {}", idPauta, contagemVotos);
+                    return contagemVotos;
+                });
     }
-
 }

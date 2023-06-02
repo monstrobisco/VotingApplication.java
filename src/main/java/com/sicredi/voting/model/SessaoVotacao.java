@@ -17,4 +17,13 @@ public class SessaoVotacao {
     private LocalDateTime inicio;
     private LocalDateTime fim;
 
+    @Override
+    public String toString() {
+        return "PautaModel{" +
+                "id='" + id + '\'' +
+                "Início='" + inicio + '\'' +
+                "Fim='" + fim + '\'' +
+                '}';
+    }
+
 }
