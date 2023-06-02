@@ -1,0 +1,32 @@
+version: '3'
+services:
+  mongodbDocker:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongodb_data:/data/db
+#  rabbitmq:
+#    image: rabbitmq:3.8.17-management-alpine
+#    ports:
+#      - 5672:5672  # Porta para o protocolo AMQP
+#      - 15672:15672  # Porta para o painel de controle do RabbitMQ
+#    environment:
+#      RABBITMQ_DEFAULT_USER: guest
+#      RABBITMQ_DEFAULT_PASS: guest
+#    volumes:
+#      - ./data/rabbitmq/rabbitmq_data:/var/lib/rabbitmq
+#  cpfvalidador:
+#    image: thmedeiroslima/cpfvalidation:latest
+#    ports:
+#      - "9191:9191"
+#  voting:
+#    image: thmedeiroslima/voting:latest
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - mongodbDocker
+#      - cpfvalidador
+#      - rabbitmq
