@@ -89,7 +89,9 @@ public class VotoHandler {
                         }
                     }
                     response.put("resultado", resultado);
-                    LOGGER.info("Resultado para a pauta {}: {}", idPauta, resultado);
+                    LOGGER.info("Resultado para a pauta ID {}: {}", idPauta, resultado);
+                    rabbitTemplate.convertAndSend(queue.getName(), response);
+                    LOGGER.info("Enviado resultado da votação para fila");
                     return ServerResponse.ok().bodyValue(response);
                 })
                 .switchIfEmpty(Mono.defer(() -> {
