@@ -22,11 +22,11 @@ services:
     image: thmedeiroslima/cpfvalidation:latest
     ports:
       - "9191:9191"
-  voting:
-    image: thmedeiroslima/voting:latest
-    ports:
-      - "9090:9090"
-    depends_on:
-      - mongodbDocker
-      - cpfvalidador
-      - rabbitmq
+#  voting:
+#    image: thmedeiroslima/votingsicredi
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - mongodbDocker
+#      - cpfvalidador
+#      - rabbitmq
